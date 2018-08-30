@@ -95,3 +95,17 @@ class Rules:
                 elif board.get_board_value(i, j) == Disk.LIGHT:
                     white_counter += 1
         return dark_counter, white_counter
+
+    def create_weight_mat(self, board_size):
+        """
+        :param board_size: the size of the board the game is played on
+        :return: mat the size of board* size of board, which contain the weight for each square in the game
+        """
+        weights_mat = [[1 for i in range(board_size)] for j in range(board_size)]
+        weights_mat[0][0] = weights_mat[board_size-1][0] = weights_mat[0][board_size-1] = weights_mat[board_size-1][board_size-1] = board_size // 1.5  #corners
+        weights_mat[0][2] = weights_mat[2][0] = weights_mat[0][board_size-3] = weights_mat[2][board_size-1] = weights_mat[board_size-1][2] = weights_mat[board_size-3][0] =\
+        weights_mat[board_size-3][board_size-1] = weights_mat[board_size-1][board_size-3] = board_size // 2
+        if board_size > 7:
+            weights_mat[2][2] = weights_mat[board_size-3][board_size-3] = weights_mat[2][board_size-3],\
+            weights_mat[board_size-3][2] = board_size // 2.5
+        return weights_mat

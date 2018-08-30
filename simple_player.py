@@ -19,7 +19,7 @@ class SimplePlayer(AbstractPlayer):
             self.rules.update_board(temp_board, move, possible_moves, self.color)
             if len(self.rules.get_move_list(temp_board, Disk(3 - self.color.value))) == 0:  # if after the update the other player has no moves
                 if len(self.rules.get_move_list(temp_board, self.color)) == 0:  # see if this player has no moves also
-                    return i  # this is winning condition, therefore i should pick that
+                    return moves[i]  # this is winning condition, therefore i should pick that
             temp_val = self.find_score(temp_board) # the score for each node
             if temp_val > max_val:
                 max_val = temp_val
