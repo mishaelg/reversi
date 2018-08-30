@@ -20,13 +20,13 @@ def calc_wins():
     ties = 0
     for i in range(10):
         game = GameInitiator()
-        player_time = 5
+        player_time = 10
         game.__setattr__("board", Board(8))
-        game.my_rules.start_board(game.board)
+        game.rules.start_board(game.board)
         opt1 = "Player07"
         opt2 = "RandomPlayer"
-        game_players = PlayersList(eval(opt1)(Disk.DARK, player_time, game.UI, game.my_rules))
-        game_players.add_next(eval(opt2)(Disk.LIGHT, player_time, game.UI, game.my_rules))
+        game_players = PlayersList(eval(opt1)(Disk.DARK, player_time, game))
+        game_players.add_next(eval(opt2)(Disk.LIGHT, player_time, game))
         game.__setattr__("game_players", game_players)
         winner = game.play_game()
         if winner == Disk.DARK:

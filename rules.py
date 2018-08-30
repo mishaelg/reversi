@@ -19,10 +19,11 @@ class Rules:
             jump_j = j - col
             while True:
                 if board.out_of_bound(i, j) or board.get_board_value(i, j) == player:
-                    return
+                    break
                 board.set_board(i, j, player)
                 i += jump_i
                 j += jump_j
+        return
 
 
     def get_move_list(self, board, player):
@@ -84,7 +85,6 @@ class Rules:
         else:
             return Disk.NONE
 
-
     def count_pieces(self, board, n):
         dark_counter = 0
         white_counter = 0
@@ -106,6 +106,6 @@ class Rules:
         weights_mat[0][2] = weights_mat[2][0] = weights_mat[0][board_size-3] = weights_mat[2][board_size-1] = weights_mat[board_size-1][2] = weights_mat[board_size-3][0] =\
         weights_mat[board_size-3][board_size-1] = weights_mat[board_size-1][board_size-3] = board_size // 2
         if board_size > 7:
-            weights_mat[2][2] = weights_mat[board_size-3][board_size-3] = weights_mat[2][board_size-3],\
+            weights_mat[2][2] = weights_mat[board_size-3][board_size-3] = weights_mat[2][board_size-3] = \
             weights_mat[board_size-3][2] = board_size // 2.5
         return weights_mat

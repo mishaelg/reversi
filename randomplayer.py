@@ -3,7 +3,7 @@ import random
 
 
 class RandomPlayer(AbstractPlayer):
-    def __init__(self, color, time=5, rules=None, UI=None):
+    def __init__(self, color, time=5, game=None):
         super().__init__(color, time)
 
     def get_move(self, board, possible_moves):
