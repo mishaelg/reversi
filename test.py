@@ -21,10 +21,10 @@ def calc_wins():
     for i in range(10):
         game = GameInitiator()
         player_time = 5
-        game.__setattr__("board", Board(6))
+        game.__setattr__("board", Board(8))
         game.my_rules.start_board(game.board)
         opt1 = "Player07"
-        opt2 = "SimplePlayer"
+        opt2 = "RandomPlayer"
         game_players = PlayersList(eval(opt1)(Disk.DARK, player_time, game.UI, game.my_rules))
         game_players.add_next(eval(opt2)(Disk.LIGHT, player_time, game.UI, game.my_rules))
         game.__setattr__("game_players", game_players)

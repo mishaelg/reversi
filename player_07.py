@@ -26,11 +26,19 @@ class Player07(AbstractPlayer):
             self.rules.update_board(temp_board, moves[node_counter], possible_moves, self.color)
             if self.rules.check_win(temp_board, Disk(3-self.color.value)) and self.rules.find_winner(temp_board, temp_board.board_size()) == self.color:  # if after the update the other player has no moves, and i won
                     return moves[node_counter]  # this is winning condition, therefore i should pick that
-                temp_val = self.minimax(3, temp_board, False)  # the value of the heuristics
-                if temp_val > max_val:
-                    max_val = temp_val
-                    max_index = i
-        return moves[max_index]
+            temp_val = self.minimax(depth, temp_board, False)  # the value of the heuristics
+            if not self.had_time: # if time is about to ran out
+                if (datetime.now() - self.current_time).seconds > self.time_per_turn:
+                    raise TimeoutError(f"Player {self.color} has lost because he ran out of time")  # if we ran out of time we lost
+                return moves[max_index]  # return the best move we found so far
+            if temp_val > max_val:
+                max_val = temp_val
+                max_index = node_counter
+            if node_counter == len(moves) - 1: # if we reached the final node, we go from the start again, with more depth
+                node_counter = 0
+                depth += 1
+            else:
+                node_counter += 1
 
     def minimax(self, depth, board, maximizing_player):
         """
@@ -41,7 +49,7 @@ class Player07(AbstractPlayer):
         """
         if depth == 0 or self.rules.check_win(board, self.color if maximizing_player else Disk(3 - self.color.value)):  # terminal node, either the board is full or both players are out of moves
             return self.heuristic_score(board)
-        if self.time_per_turn - (datetime.now - self.current_time).second < 0.2:
+        if self.time_per_turn - (datetime.now() - self.current_time).seconds < 0.001:
             self.had_time = False
             return
         if maximizing_player:
@@ -53,9 +61,10 @@ class Player07(AbstractPlayer):
             for move in moves:
                 temp_board = copy.deepcopy(board)
                 self.rules.update_board(temp_board, move, possible_moves, self.color)
-                max_val = max(max_val, self.minimax(depth-1, temp_board, False))
+                checker = self.minimax(depth-1, temp_board, False)
                 if not self.had_time:
                     return  # if he didn't have time, collapse the recursion
+                max_val = max(max_val, checker)
             return max_val
         else:  # now its the minimizing player's turn
             min_val = math.inf
@@ -66,9 +75,11 @@ class Player07(AbstractPlayer):
             for move in moves:
                 temp_board = copy.deepcopy(board)
                 self.rules.update_board(temp_board, move, possible_moves, Disk(3-self.color.value))
-                min_val = min(min_val, self.minimax(depth - 1, temp_board, True))
+                checker = self.minimax(depth - 1, temp_board, True)
                 if not self.had_time:
                     return  # if he didn't have time, collapse the recursion
+                min_val = min(min_val, checker)
+
             return min_val
 
     def heuristic_score(self, board):  # the heuristic score of each node
