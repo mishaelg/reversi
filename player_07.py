@@ -5,6 +5,7 @@ from disk import Disk
 import math
 from datetime import datetime
 from datetime import timedelta
+import random
 
 class Player07(AbstractPlayer):
     def __init__(self, color, time_per_turn=5, game=None):
@@ -12,12 +13,14 @@ class Player07(AbstractPlayer):
         self.game = game
 
     def get_move(self, board, possible_moves):
+        if self.game.all_moves == '':  # first of the game, doesn't matter what you pick
+            return random.choice(list(possible_moves.keys()))
         try:
             return self.game.opening_book[self.game.all_moves]
         except KeyError:
             self.current_time = datetime.now()
             self.had_time = True
-            depth = int(math.log(self.time_per_turn, 2) + 1)  # adaptive start depth, based on how much time was given on start
+            depth = int(math.log(self.time_per_turn, 2))  # adaptive start depth, based on how much time was given on start
             node_counter = 0
             if not hasattr(self, 'weighted_mat'):
                 self.weighted_mat = self.game.rules.create_weight_mat(board.board_size())  # if the player doesnt have a weighted list already, create one (save calculation time later)
@@ -49,9 +52,14 @@ class Player07(AbstractPlayer):
         :param maximizing_player: True if the maximizing player turn to play, False else
         :return: the node(Board) with the highest heuristic value
         """
-        if depth == 0 or self.game.rules.check_win(board, self.color if maximizing_player else Disk(3 - self.color.value)):  # terminal node, either the board is full or both players are out of moves
+        if depth == 0:
             return self.heuristic_score(board)
-        if self.time_per_turn - (datetime.now() - self.current_time).seconds < 0.001:
+        if self.game.rules.check_win(board, self.color if maximizing_player else Disk(3 - self.color.value)):# terminal node, either the board is full or both players are out of moves
+            if self.game.rules.find_winner(board, board.board_size()) == self.color:  # if the player won, this is the optimum move
+                return math.inf
+            else:  # playing to win baby!
+                return -math.inf
+        if self.time_per_turn - (datetime.now() - self.current_time).seconds < 0.1:
             self.had_time = False
             return
         if maximizing_player:

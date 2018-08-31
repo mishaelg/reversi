@@ -101,11 +101,15 @@ class Rules:
         :param board_size: the size of the board the game is played on
         :return: mat the size of board* size of board, which contain the weight for each square in the game
         """
-        weights_mat = [[1 for i in range(board_size)] for j in range(board_size)]
-        weights_mat[0][0] = weights_mat[board_size-1][0] = weights_mat[0][board_size-1] = weights_mat[board_size-1][board_size-1] = board_size // 1.5  #corners
-        weights_mat[0][2] = weights_mat[2][0] = weights_mat[0][board_size-3] = weights_mat[2][board_size-1] = weights_mat[board_size-1][2] = weights_mat[board_size-3][0] =\
-        weights_mat[board_size-3][board_size-1] = weights_mat[board_size-1][board_size-3] = board_size // 2
-        if board_size > 7:
-            weights_mat[2][2] = weights_mat[board_size-3][board_size-3] = weights_mat[2][board_size-3] = \
-            weights_mat[board_size-3][2] = board_size // 2.5
+        if board_size == 8:  # if the board is the size of 8, a special herustic is used
+            weights_mat = [[10000, -3000, 1000, 800, 800, 1000, -3000, 10000],
+                           [-3000, -5000, -450, -500, -500, -450, -5000, -3000],
+                           [1000, -450, 100, 10, 10, 30, -450, 1000],
+                           [800, -500, 10, 50, 50, 10, -500, 800]]
+            weights_mat = weights_mat + weights_mat[::-1][::]
+        else:
+            weights_mat = [[1 for i in range(board_size)] for j in range(board_size)]
+            weights_mat[0][0] = weights_mat[board_size-1][0] = weights_mat[0][board_size-1] = weights_mat[board_size-1][board_size-1] = board_size // 1.5  #corners
+            weights_mat[0][2] = weights_mat[2][0] = weights_mat[0][board_size-3] = weights_mat[2][board_size-1] = weights_mat[board_size-1][2] = weights_mat[board_size-3][0] =\
+            weights_mat[board_size-3][board_size-1] = weights_mat[board_size-1][board_size-3] = board_size // 2
         return weights_mat
