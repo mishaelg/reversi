@@ -54,7 +54,9 @@ class Rules:
             j += jump_j
             if board.out_of_bound(i, j):
                 return False
-            if board.get_board_value(i, j) == player: # found the player disk on the opposite side
+            if board.get_board_value(i, j) == Disk.NONE:
+                return False
+            if board.get_board_value(i, j) == player:  # found the player disk on the opposite side
                 return True
 
     def find_vacant_spots(self, i, j, board):
@@ -102,10 +104,10 @@ class Rules:
         :return: mat the size of board* size of board, which contain the weight for each square in the game
         """
         if board_size == 8:  # if the board is the size of 8, a special herustic is used
-            weights_mat = [[10000, -3000, 1000, 800, 800, 1000, -3000, 10000],
-                           [-3000, -5000, -450, -500, -500, -450, -5000, -3000],
-                           [1000, -450, 100, 10, 10, 30, -450, 1000],
-                           [800, -500, 10, 50, 50, 10, -500, 800]]
+            weights_mat = [[10, -3, 5, 3, 3, 5, -3, 10],
+                           [-3, -5, -4.5, -1, -1, -4.5, -5, -3],
+                           [5, -1, 3, 1, 1, 3, -1, 5],
+                           [4, -1, 1, 1, 1, 1, -1, 4]]
             weights_mat = weights_mat + weights_mat[::-1][::]
         else:
             weights_mat = [[1 for i in range(board_size)] for j in range(board_size)]

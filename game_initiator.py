@@ -40,7 +40,6 @@ class GameInitiator:
                     winner = self.rules.find_winner(self.board, self.board.board_size())
                     self.UI.print_winners(winner)
                     return winner
-                    break
                 continue
             else:
                 self.turns = 0
